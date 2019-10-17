@@ -1,8 +1,6 @@
 import React from 'react';
 import { Route, Switch, BrowserRouter } from 'react-router-dom';
-
 import { makeStyles } from '@material-ui/core/styles';
-
 
 // Components
 import Layout from '../components/Layouts';
@@ -13,11 +11,10 @@ import Home from '../pages/Home';
 import Explore from '../pages/Explore';
 import NotFound from '../pages/NotFound';
 import Profile from '../pages/Profile';
-import auth from '../helpers/auth';
 import ProtectedRoute from '../components/Navigation/ProtectedRoute';
 import SignIn from '../pages/Auth/Signin';
 import SiginUp from '../pages/Auth/Siginup';
-
+import { useGlobalStore } from '../store';
 
 const useStyles = makeStyles({
   root: {
@@ -39,11 +36,13 @@ const useStyles = makeStyles({
 
 const Routes = () => {
   const classes = useStyles({});
+  const { state } = useGlobalStore();
+  const { auth } = state;
+
 
   return (
     <Layout>
       <BrowserRouter>
-
         <div className={classes.root}>
           <div className={classes.content}>
             <Switch>
@@ -60,7 +59,6 @@ const Routes = () => {
             )}
           </div>
         </div>
-
       </BrowserRouter>
     </Layout>
   );

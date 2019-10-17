@@ -14,10 +14,14 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import FacebookIcon from '@material-ui/icons/Facebook';
-import siginStyles from './signin.styles';
+import { Redirect } from 'react-router-dom';
+import siginStyles from './styles';
 
 import { Copyright } from '../../components/Copyright';
 import LinkRouter from '../../components/Navigation/LinkRouter';
+import { AuthSideImage } from '../../components/AuthSideImage';
+import { useGlobalStore } from '../../store';
+import { setAuthUser } from '../../store/modules/auth/actions';
 
 
 const useStyles = siginStyles;
@@ -25,10 +29,19 @@ const useStyles = siginStyles;
 
 const SignInSide = () => {
   const classes = useStyles({});
+  const { dispatch, state } = useGlobalStore();
+
+  if (state.auth.isAuthenticated) {
+    return <Redirect to="/home" />;
+  }
+
+  const handleSignup = () => {
+    dispatch(setAuthUser());
+  };
 
   return (
     <Grid container component="main" className={classes.root}>
-      <Grid item xs={false} sm={4} md={7} className={classes.image} />
+      <AuthSideImage />
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
@@ -70,6 +83,7 @@ const SignInSide = () => {
               variant="contained"
               color="primary"
               className={classes.submit}
+              onClick={() => handleSignup()}
             >
               Sign In
             </Button>
