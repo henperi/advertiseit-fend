@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -11,10 +11,15 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import FacebookIcon from '@material-ui/icons/Facebook';
-import siginStyles from './signin.styles';
+import { Redirect } from 'react-router-dom';
 
+import siginStyles from './styles';
 import { Copyright } from '../../components/Copyright';
 import LinkRouter from '../../components/Navigation/LinkRouter';
+import { AuthSideImage } from '../../components/AuthSideImage';
+import { useGlobalStore } from '../../store';
+import { registerUser } from '../../store/modules/auth/actions';
+import { validateSignupData } from './validations';
 
 
 const useStyles = siginStyles;
@@ -23,11 +28,42 @@ const useStyles = siginStyles;
 const SignUpSide = () => {
   const classes = useStyles({});
 
-  const handleSignup = () => {};
+  const { dispatch, state } = useGlobalStore();
+
+  const [signupErrors, setSignupErrors] = useState(null);
+
+  const [signupData, setSignupData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    accountType: 'Customer',
+  });
+
+  const handleSignup = async () => {
+    const validationErrors = await validateSignupData(signupData);
+    if (!validationErrors) {
+      return dispatch(registerUser(signupData));
+    }
+
+    return setSignupErrors({ ...validationErrors.errors.detailsObject });
+  };
+
+  const handleOnChange = (event) => {
+    setSignupErrors({ ...signupErrors, [event.target.name]: '' });
+    setSignupData({
+      ...signupData,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  if (state.auth.isAuthenticated) {
+    return <Redirect to="/home" />;
+  }
 
   return (
     <Grid container component="main" className={classes.root}>
-      <Grid item xs={false} sm={4} md={7} className={classes.image} />
+      <AuthSideImage />
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
@@ -46,7 +82,12 @@ const SignUpSide = () => {
               name="firstName"
               autoComplete="first name"
               autoFocus
+              onChange={(event) => handleOnChange(event)}
             />
+            {
+              signupErrors && signupErrors.firstName && (
+              <Typography color="secondary">{signupErrors.firstName}</Typography>)
+            }
             <TextField
               variant="outlined"
               margin="normal"
@@ -55,19 +96,41 @@ const SignUpSide = () => {
               label="Last Name"
               name="lastName"
               autoComplete="last name"
-              autoFocus
+              onChange={(event) => handleOnChange(event)}
             />
+            {
+              signupErrors && signupErrors.lastName && (
+              <Typography color="secondary">{signupErrors.lastName}</Typography>)
+            }
             <TextField
               variant="outlined"
               margin="normal"
               required
               fullWidth
-              id="email"
+              label="Phone Number"
+              name="phone"
+              autoComplete="phone"
+              placeholder="08033311144"
+              onChange={(event) => handleOnChange(event)}
+            />
+            {
+              signupErrors && signupErrors.phone && (
+              <Typography color="secondary">{signupErrors.phone}</Typography>)
+            }
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
               label="Email Address"
               name="email"
               autoComplete="email"
-              autoFocus
+              onChange={(event) => handleOnChange(event)}
             />
+            {
+              signupErrors && signupErrors.email && (
+              <Typography color="secondary">{signupErrors.email}</Typography>)
+            }
             <TextField
               variant="outlined"
               margin="normal"
@@ -76,9 +139,13 @@ const SignUpSide = () => {
               name="password"
               label="Password"
               type="password"
-              id="password"
               autoComplete="current-password"
+              onChange={(event) => handleOnChange(event)}
             />
+            {
+              signupErrors && signupErrors.password && (
+              <Typography color="secondary">{signupErrors.password}</Typography>)
+            }
             <Button
               type="button"
               fullWidth
