@@ -16,6 +16,10 @@ export const authReducer = (state = authInitialState, action) => {
           ...action.payload.user,
         },
       };
+    case types.REMOVE_AUTH_USER:
+      return {
+        ...authInitialState,
+      };
 
     default:
       return state;

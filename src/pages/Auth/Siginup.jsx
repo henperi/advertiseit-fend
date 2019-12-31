@@ -10,7 +10,6 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import FacebookIcon from '@material-ui/icons/Facebook';
 import { Redirect } from 'react-router-dom';
 
 import siginStyles from './styles';
@@ -20,6 +19,7 @@ import { AuthSideImage } from '../../components/AuthSideImage';
 import { useGlobalStore } from '../../store';
 import { registerUser } from '../../store/modules/auth/actions';
 import { validateSignupData } from './validations';
+import { FacebookLogin } from '../../components/FacebookLogin';
 
 
 const useStyles = siginStyles;
@@ -164,17 +164,7 @@ const SignUpSide = () => {
                 </LinkRouter>
               </Grid>
             </Grid>
-
-            <Button
-              type="button"
-              fullWidth
-              variant="contained"
-              color="default"
-              className={classes.facebookLogin}
-              startIcon={<FacebookIcon color="primary" />}
-            >
-              Login with Facebook
-            </Button>
+            <FacebookLogin label="Signup With Facebook" />
             <Box mt={5}>
               <Copyright />
             </Box>

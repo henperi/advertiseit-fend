@@ -17,4 +17,9 @@ export const setAuthHeader = (token, header = 'authorization') => {
   }
 };
 
+export const removeAuthHeader = (header = 'authorization') => {
+  localStorage.removeItem('authToken');
+  httpService.defaults.headers.common[header] = '';
+};
+
 export default httpService;

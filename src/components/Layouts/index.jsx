@@ -1,14 +1,18 @@
 import React from 'react';
 import PropsTypes from 'prop-types';
 
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
-import theme from '../../themes';
+import createOverrides from '../../themes';
 
-
+const baseTheme = createMuiTheme();
 const Layout = ({ children }) => (
-  <MuiThemeProvider theme={theme}>
+  <MuiThemeProvider theme={{
+    ...baseTheme,
+    overrides: createOverrides(baseTheme),
+  }}
+  >
     <CssBaseline />
     {children}
   </MuiThemeProvider>

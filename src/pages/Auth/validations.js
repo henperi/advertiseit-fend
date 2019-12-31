@@ -35,5 +35,25 @@ const validateSignupData = async (signupData) => {
     };
   }
 };
+const validateSigninData = async (signinData) => {
+  try {
+    const signinDataSchema = Joi.object().keys({
+      email: Joi.string()
+        .email()
+        .required(),
+      password: Joi.string().required(),
+    });
+    // @ts-ignore
+    await signinDataSchema.validate(signinData, {
+      abortEarly: false,
+    });
 
-export { validateSignupData };
+    return null;
+  } catch (errors) {
+    return {
+      errors: formatJoiErrors(errors),
+    };
+  }
+};
+
+export { validateSignupData, validateSigninData };

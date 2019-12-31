@@ -15,6 +15,9 @@ import ProtectedRoute from '../components/Navigation/ProtectedRoute';
 import SignIn from '../pages/Auth/Signin';
 import SiginUp from '../pages/Auth/Siginup';
 import { useGlobalStore } from '../store';
+import TopNav from '../components/Navigation/TopNav';
+import { Main } from '../components/Layouts/Main';
+import { AppLoader } from '../components/AppLoader';
 
 const useStyles = makeStyles({
   root: {
@@ -37,23 +40,32 @@ const useStyles = makeStyles({
 const Routes = () => {
   const classes = useStyles({});
   const { state } = useGlobalStore();
-  const { auth } = state;
+  const { auth, app } = state;
 
+
+  if (!app.isReady) {
+    return <AppLoader />;
+  }
 
   return (
     <Layout>
       <BrowserRouter>
         <div className={classes.root}>
           <div className={classes.content}>
-            <Switch>
-              <ProtectedRoute exact path="/" component={Home} />
-              <Route exact path="/signin" component={SignIn} />
-              <Route exact path="/signup" component={SiginUp} />
-              <ProtectedRoute exact path="/home" component={Home} />
-              <ProtectedRoute exact path="/explore" component={Explore} />
-              <ProtectedRoute exact path="/profile" component={Profile} />
-              <Route component={NotFound} />
-            </Switch>
+            {auth.isAuthenticated && (
+            <Route path="" component={TopNav} />
+            )}
+            <Main>
+              <Switch>
+                <ProtectedRoute exact path="/" component={Home} />
+                <Route exact path="/signin" component={SignIn} />
+                <Route exact path="/signup" component={SiginUp} />
+                <ProtectedRoute exact path="/home" component={Home} />
+                <ProtectedRoute exact path="/explore" component={Explore} />
+                <ProtectedRoute exact path="/profile" component={Profile} />
+                <Route component={NotFound} />
+              </Switch>
+            </Main>
             {auth.isAuthenticated && (
               <Route path="" component={AppBottomNav} />
             )}
